@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -47,9 +48,12 @@ Future<String> deleteResources(int id) async {
   return response.statusCode.toString();
 }
 
+var _timer;
+
 class _HomePageState extends State<HomePage> {
   @override
   void initState() {
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {});
     getResources().then((value) {
       setState(() {
         fetched = true;
@@ -61,7 +65,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<dynamic>>(
-        future: fetched == false ? null : getResources(),
+        future: fetched == false ? getResources() : null,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return ListView(
