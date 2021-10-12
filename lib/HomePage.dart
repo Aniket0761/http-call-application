@@ -8,6 +8,8 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
+var fetched = false;
+
 Future<List<dynamic>> getResources() async {
   var url = 'https://jsonplaceholder.typicode.com/posts';
   final response = await http.read(Uri.tryParse('$url'));
@@ -47,9 +49,19 @@ Future<String> deleteResources(int id) async {
 
 class _HomePageState extends State<HomePage> {
   @override
+  void initState() {
+    getResources().then((value) {
+      setState(() {
+        fetched = true;
+      });
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<dynamic>>(
-        future: getResources(),
+        future: fetched == false ? null : getResources(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return ListView(
